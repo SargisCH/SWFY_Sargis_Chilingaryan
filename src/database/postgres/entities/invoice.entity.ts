@@ -1,5 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { IsNumber, IsString } from 'class-validator';
+import { ClientEntity } from './client.entity';
 
 @Entity('invoices')
 export class InvoiceEntity {
@@ -14,6 +21,13 @@ export class InvoiceEntity {
 
   @Column({ type: 'jsonb', nullable: true, name: 'customer_data' })
   customerData?: object;
+
+  @ManyToOne(() => ClientEntity, (client) => client.invoices)
+  @JoinColumn({ name: 'clientid' })
+  client: ClientEntity;
+
+  @Column({ type: 'uuid', nullable: true })
+  clientid: string;
 }
 
 export class LineItems {

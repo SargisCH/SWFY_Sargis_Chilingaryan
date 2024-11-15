@@ -2,6 +2,7 @@ import { BaseModel } from '../../common/models/base.model';
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import GraphQLJSON from 'graphql-type-json';
 import { IsNumber, IsString } from 'class-validator';
+import { ClientModel } from 'src/client/models/client.model';
 
 @ObjectType()
 export class InvoiceLineItemsModel {
@@ -28,8 +29,8 @@ export class InvoiceLineItemsModel {
 
 @ObjectType()
 export class InvoiceModel extends BaseModel {
-  @Field(() => Int)
-  id: number;
+  @Field(() => String)
+  id: string;
 
   @Field(() => String)
   name: string;
@@ -45,6 +46,12 @@ export class InvoiceModel extends BaseModel {
 
   @Field({ nullable: true, name: 'issued_at' })
   issuedAt?: Date;
+
+  @Field({ nullable: true, name: 'clientid' })
+  clientid?: string;
+
+  @Field({ nullable: true, name: 'client' })
+  client?: ClientModel;
 
   @Field(() => GraphQLJSON, { nullable: true, name: 'customer_data' })
   customerData?: object;

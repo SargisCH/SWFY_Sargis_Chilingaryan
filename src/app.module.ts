@@ -4,6 +4,7 @@ import { AppService } from './probe/app.service';
 import { GraphQLModule, registerEnumType } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { InvoiceModule } from './invoice/invoice.module';
+import { ClientModule } from './client/client.module';
 import { ErrorCode } from './common/enum/error.code';
 import { DatabaseModule } from './database/postgres/modules/postgress.database';
 
@@ -17,6 +18,7 @@ registerEnumType(ErrorCode, {
       autoSchemaFile: 'schema.gql',
     }),
     InvoiceModule,
+    ClientModule,
     DatabaseModule,
   ],
   controllers: [AppController],

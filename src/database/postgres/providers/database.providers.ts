@@ -1,6 +1,12 @@
 import { DataSource } from 'typeorm';
-import { InvoiceTable1731422100036 } from '../migrations';
+import {
+  InvoiceTable1731422100036,
+  ClientTable1731621635384,
+  CliendIdString1731686185865,
+  ClientInvoiceRelation1731702425455,
+} from '../migrations';
 import { InvoiceEntity } from '../entities';
+import { ClientEntity } from '../entities/client.entity';
 
 export const dataSource = new DataSource({
   type: 'postgres',
@@ -9,8 +15,13 @@ export const dataSource = new DataSource({
   username: 'root',
   password: 'root',
   database: 'swfy',
-  entities: [InvoiceEntity],
-  migrations: [InvoiceTable1731422100036],
+  entities: [InvoiceEntity, ClientEntity],
+  migrations: [
+    InvoiceTable1731422100036,
+    ClientTable1731621635384,
+    CliendIdString1731686185865,
+    ClientInvoiceRelation1731702425455,
+  ],
   synchronize: false,
 });
 

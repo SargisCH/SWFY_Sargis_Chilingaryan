@@ -11,6 +11,12 @@ export class CreateInvoiceArgs {
   @IsOptional()
   name?: string;
 
+  @Field(() => String, {
+    nullable: true,
+  } as FieldOptions<string>)
+  @IsOptional()
+  clientId?: string;
+
   @Field(() => [LineItemsArgs], {
     nullable: true,
   } as FieldOptions<[LineItemsArgs]>)

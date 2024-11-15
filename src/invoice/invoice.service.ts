@@ -1,37 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateInvoiceArgs } from './dto/create.invoice.args';
 import { InvoiceModel } from './models/invoice.model';
 import { plainToInstance } from 'class-transformer';
+import { InvoiceEntity } from 'src/database/postgres/entities';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class InvoiceService {
-  public async findById({ id }: { id: number }) {
-    const invoice: InvoiceModel = {
-      id: id,
-      name: 'Invoice',
-      status: 'Draft',
-      quoteNumber: '1',
-      lineItems: [],
-      deletedAt: null,
-      issuedAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    return plainToInstance(InvoiceModel, invoice);
+  private invoiceRepository = this.dataSource.getRepository(InvoiceEntity);
+  constructor(@Inject('DATA_SOURCE') private readonly dataSource: DataSource) {}
+  public async findById({ id }: { id: string }) {
+    const invoiceData = await this.invoiceRepository.findOne({
+      where: { id },
+      relations: ['client'],
+    });
+    return plainToInstance(InvoiceModel, invoiceData);
   }
 
   public async create(args: CreateInvoiceArgs) {
-    const invoice: InvoiceModel = {
-      id: 1,
-      name: 'Invoice',
-      status: 'Draft',
-      quoteNumber: '1',
-      lineItems: args.line_items,
-      issuedAt: new Date(),
-      customerData: args.customerData,
+    const invoice = {
+      ...args,
+      clientid: args.clientId,
     };
-
-    return plainToInstance(InvoiceModel, invoice);
+    const invoiceData = this.invoiceRepository.create(invoice);
+    const insertRes = await this.invoiceRepository.insert(invoiceData);
+    const invoiceReturned = await this.invoiceRepository.findOneBy({
+      id: insertRes.raw[0].id,
+    });
+    return plainToInstance(InvoiceModel, invoiceReturned);
   }
 }
