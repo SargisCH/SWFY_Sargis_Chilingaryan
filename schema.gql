@@ -1,0 +1,254 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ClientModel {
+  created_at: DateTime
+  updated_at: DateTime
+  deleted_at: DateTime
+  id: String!
+  name: String!
+  email: String!
+  invoices: [InvoiceModel!]
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type InvoiceLineItemsModel {
+  description: String!
+  amount: Float!
+  price: Float!
+  units: Float!
+  vat: Float!
+}
+
+type InvoiceModel {
+  created_at: DateTime
+  updated_at: DateTime
+  deleted_at: DateTime
+  id: String!
+  name: String!
+  status: String!
+  quote_number: String!
+  line_items: [InvoiceLineItemsModel!]!
+  issued_at: DateTime
+  clientid: String
+  client: ClientModel
+  customer_data: JSON
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type Alert {
+  id: Int
+  name: String
+  message: String!
+}
+
+type Pagination implements IPagination {
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}
+
+interface IPagination {
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}
+
+type Query {
+  getQuote(args: GetByIdArgs!): GetInvoiceById!
+  getClients(pagination: PaginationArgs!): GetClients!
+  getClient(args: GetClientByIdArgs!): GetClientById!
+}
+
+union GetInvoiceById = GetInvoiceSuccess | GetInvoiceFailure
+
+type GetInvoiceSuccess implements ISuccess {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]
+  data: InvoiceModel!
+}
+
+interface ISuccess {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]
+}
+
+enum ErrorCode {
+  UNKNOWN
+  SUCCESS
+  FAILURE
+  INVOICE_NOT_FOUND
+  CLIENT_NOT_FOUND
+}
+
+type GetInvoiceFailure implements IFailure {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]!
+}
+
+interface IFailure {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]!
+}
+
+input GetByIdArgs {
+  id: String!
+}
+
+union GetClients = GetClientsSuccess | GetClientFailure
+
+type GetClientsSuccess implements ISuccess {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]
+  data: [ClientModel!]!
+  pagination: Pagination!
+}
+
+type GetClientFailure implements IFailure {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]!
+}
+
+input PaginationArgs {
+  page: Float = 1
+  limit: Float = 10
+}
+
+union GetClientById = GetClientSuccess | GetClientFailure
+
+type GetClientSuccess implements ISuccess {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]
+  data: ClientModel!
+}
+
+input GetClientByIdArgs {
+  id: String!
+}
+
+type Mutation {
+  createInvoice(args: CreateInvoiceArgs!): CreateInvoice!
+  createClient(args: CreateClientArgs!): CreateClient!
+  updateClient(args: UpdateClientArgs!): UpdateClient!
+  deleteClient(args: DeleteClientArgs!): DeleteClient!
+}
+
+union CreateInvoice = CreateInvoiceSuccess | CreateInvoiceFailure
+
+type CreateInvoiceSuccess implements ISuccess {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]
+  data: InvoiceModel!
+}
+
+type CreateInvoiceFailure implements IFailure {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]!
+}
+
+input CreateInvoiceArgs {
+  name: String
+  clientId: String
+  line_items: [LineItemsArgs!]
+  customer_data: JSON
+}
+
+input LineItemsArgs {
+  description: String!
+  amount: Float!
+  price: Float!
+  units: Float!
+  vat: Float!
+}
+
+union CreateClient = CreateClientSuccess | CreateClientFailure
+
+type CreateClientSuccess implements ISuccess {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]
+  data: ClientModel!
+}
+
+type CreateClientFailure implements IFailure {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]!
+}
+
+input CreateClientArgs {
+  name: String
+  email: String
+}
+
+union UpdateClient = UpdateClientSuccess | UpdateClientFailure
+
+type UpdateClientSuccess implements ISuccess {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]
+  data: ClientModel!
+}
+
+type UpdateClientFailure implements IFailure {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]!
+}
+
+input UpdateClientArgs {
+  name: String
+  email: String
+  id: String!
+}
+
+union DeleteClient = DeleteClientSuccess | DeleteClientFailure
+
+type DeleteClientSuccess implements ISuccess {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]
+}
+
+type DeleteClientFailure implements IFailure {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]!
+}
+
+input DeleteClientArgs {
+  id: String!
+}
