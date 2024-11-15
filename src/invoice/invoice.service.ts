@@ -16,6 +16,13 @@ export class InvoiceService {
     });
     return plainToInstance(InvoiceModel, invoiceData);
   }
+  public async findByClientId({ clientId }: { clientId: string }) {
+    const invoiceData = await this.invoiceRepository.find({
+      where: { clientid: clientId },
+      relations: ['client'],
+    });
+    return invoiceData.map((invoice) => plainToInstance(InvoiceModel, invoice));
+  }
 
   public async create(args: CreateInvoiceArgs) {
     const invoice = {

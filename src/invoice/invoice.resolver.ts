@@ -10,10 +10,12 @@ import {
 } from './models/create/create.invoice.model';
 import { CreateInvoiceArgs } from './dto/create.invoice.args';
 import { InvoiceNotFoundException } from '../common/exception/invoice.exception';
-import { GetByIdArgs } from '../common/dto/get.by.id';
+import { GetByClientIdArgs, GetByIdArgs } from '../common/dto/get.by.id';
 import {
   GetInvoiceFailure,
+  GetInvoicesSuccess,
   GetInvoiceSuccess,
+  GetInvoicesUnion,
   GetInvoiceUnion,
 } from './models/getById/get.invoice';
 
@@ -33,6 +35,25 @@ export class InvoiceResolver {
 
       if (data) {
         return new GetInvoiceSuccess(data);
+      }
+      throw new InvoiceNotFoundException();
+    } catch (e) {
+      return new GetInvoiceFailure({ message: e.message });
+    }
+  }
+  @Query(() => GetInvoicesUnion)
+  @UseFilters(new HttpExceptionFilter(GetInvoiceFailure))
+  public async getInvoicesByClientId(
+    @Args('args', { type: () => GetByClientIdArgs })
+    args: GetByClientIdArgs,
+  ) {
+    try {
+      const data = await this.service.findByClientId({
+        clientId: args.clientId,
+      });
+
+      if (data) {
+        return new GetInvoicesSuccess(data);
       }
       throw new InvoiceNotFoundException();
     } catch (e) {

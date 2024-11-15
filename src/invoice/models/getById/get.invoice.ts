@@ -15,6 +15,17 @@ export class GetInvoiceSuccess extends Success {
 }
 
 @ObjectType()
+export class GetInvoicesSuccess extends Success {
+  constructor(data: Array<InvoiceModel>, options?: SuccessOptions) {
+    super(options);
+    this.data = data;
+  }
+
+  @Field(() => [InvoiceModel])
+  data: InvoiceModel[];
+}
+
+@ObjectType()
 export class GetInvoiceFailure extends Failure {
   constructor(options: FailureOptions) {
     super(options);
@@ -24,4 +35,8 @@ export class GetInvoiceFailure extends Failure {
 export const GetInvoiceUnion = createUnionType({
   name: 'GetInvoiceById',
   types: () => [GetInvoiceSuccess, GetInvoiceFailure],
+});
+export const GetInvoicesUnion = createUnionType({
+  name: 'GetInvoicesByClientId',
+  types: () => [GetInvoicesSuccess, GetInvoiceFailure],
 });

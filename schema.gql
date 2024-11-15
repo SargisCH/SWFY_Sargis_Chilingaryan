@@ -65,6 +65,7 @@ interface IPagination {
 
 type Query {
   getQuote(args: GetByIdArgs!): GetInvoiceById!
+  getInvoicesByClientId(args: GetByClientIdArgs!): GetInvoicesByClientId!
   getClients(pagination: PaginationArgs!): GetClients!
   getClient(args: GetClientByIdArgs!): GetClientById!
 }
@@ -110,6 +111,20 @@ interface IFailure {
 
 input GetByIdArgs {
   id: String!
+}
+
+union GetInvoicesByClientId = GetInvoicesSuccess | GetInvoiceFailure
+
+type GetInvoicesSuccess implements ISuccess {
+  code: ErrorCode
+  statusCode: Int
+  message: String
+  alerts: [Alert!]
+  data: [InvoiceModel!]!
+}
+
+input GetByClientIdArgs {
+  clientId: String!
 }
 
 union GetClients = GetClientsSuccess | GetClientFailure
